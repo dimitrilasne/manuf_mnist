@@ -70,17 +70,17 @@ def post_guess_number():
 		
         int_ceil = math.ceil(math.sqrt(len(data)))
         int_ceil*=int_ceil
-        print(int_ceil)
-        print(len(data))
+        #print(int_ceil)
+        #print(len(data))
 		
         if len(data) != int_ceil:
           for i in range(int_ceil-len(data)):
              data.append(0)
         
-        print(sum([1 for i in data if i==255]))
+        #print(sum([1 for i in data if i==255]))
         img = np.reshape(data, (84, 84))
         
-        print(img.shape)
+        #print(img.shape)
         mpimg.imsave("resultat.png", img)
         image = Image.open("resultat.png")
         image = image.resize((28, 28), Image.ANTIALIAS)
@@ -90,18 +90,20 @@ def post_guess_number():
         img = np.array(image)
         img = img[:,:,:3]
         img = img.sum(axis=2)
-        img[img<255] = 0
-        img[img>=255] = 1
+        #img[img<255] = 0
+        #img[img>=255] = 1
+        img = np.subtract(img, img.min())
+        img = np.divide(img, img.max())
         #print(img)
-        print(img.shape)
+        #print(img.shape)
         img = img.flatten()
-        print(img.shape)
+        #print(img.shape)
         img = np.expand_dims(img, axis=0)
         
         preds = demo.getNumberFromArray(img)[0]
-        print(preds)
+        #print(preds)
         preds = ['{:.3f}'.format(i) for i in preds]
-        print(preds)
+        #print(preds)
         preds = [str(i) for i in preds]
         chiffres = ['0','1','2','3','4','5','6','7','8','9']
         dictionary = dict(zip(chiffres, preds))
