@@ -58,6 +58,47 @@ def post_guess_number():
         print("je recoit quelque chose")
         demo.load_modele()
         data = request.data
+		
+        fileBytes = io.BytesIO(data)
+        file_ = Image.open(fileBytes)
+        file_.save("data.png")
+		
+        image = file_.resize((28, 28), Image.ANTIALIAS)
+        image.save("resultat_downsize.png")
+		
+        img = np.array(image)
+        img = img[:,:,3:]
+        #print(img.shape)
+		
+        img = img.flatten()
+        #print(img.shape)
+        img = np.expand_dims(img, axis=0)
+		
+        preds = demo.getNumberFromArray(img)[0]
+        #print(preds)
+        preds = ['{:.3f}'.format(i) for i in preds]
+        #print(preds)
+		
+        preds = [str(i) for i in preds]
+        chiffres = ['0','1','2','3','4','5','6','7','8','9']
+        dictionary = dict(zip(chiffres, preds))
+        print(dictionary)
+		
+        return flask.jsonify(**dictionary)
+    except:
+        print(sys.exc_info())
+        return '{"reponse":"Something went wrong."}'
+
+
+
+@app.route('/guess_number_old', methods=['POST'])
+def post_guess_number_old():
+    """ Get an image in the form of an array and return a number """
+      
+    try:
+        print("je recoit quelque chose")
+        demo.load_modele()
+        data = request.data
       
         a = str(data).replace('x', '0x').split('\\')
         a = a[1:]
