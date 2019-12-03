@@ -68,7 +68,9 @@ def post_guess_number():
 		
         img = np.array(image)
         img = img[:,:,3:]
+        img = img.reshape((28, 28))
         #print(img.shape)
+        #print(img)
 		
         img = img.flatten()
         #print(img.shape)
